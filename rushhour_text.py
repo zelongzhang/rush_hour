@@ -50,12 +50,15 @@ class Game:
     #Mainloop function. Takes commands from user and if it's a valid move, make the move on the board.
     def play(self):
         while not self.game_end():
-            command_car = str(input('enter which car to  move'))
-            command_direction = str(input('enter the direction to move (wasd)'))
-            command_step = int(input('enter how far'))
+            command_car = self.get_input(1,[i for i in range(0,len(self.cars))],'enter which car to move ')
+            command_direction = self.get_input('s','wasd','enter the direction to move (wasd) ')
+            command_step = self.get_input(1,[i for i in range(0,self.row+1)],'enter how far to move ')
            
-            if self.check(self.cars[command_car],command_direction,command_step):
-                self.move(self.cars[command_car],command_direction,command_step,command_car)
+            if self.check(self.cars[str(command_car)],command_direction,command_step):
+                print('hey')
+                self.move(self.cars[str(command_car)],command_direction,command_step,command_car)
+            else:
+                print('invalid move')
             self.update() 
 
     #sets up winning condition and end. True if condition is met. False if it's not
@@ -111,6 +114,9 @@ class Game:
                     if self.display[car.row+car.size-1+i][car.col]!='.':
                         print('collision')
                         return False
+                else:
+                    print('that car doesn''t go that way')
+                    return False
             return True
         #check horizontal cars
         elif car.orientation == 'h':
@@ -130,7 +136,32 @@ class Game:
                     if self.display[car.row][car.col+car.size-1+i]!='.':
                         print('collision')
                         return False
+                else:
+                    print('that car doesn''t go that way')
+                    return False
             return True
+    
+    def get_input(self,sample,range,prompt):
+        while True:
+            if type(sample) == int:
+                try:
+                    i=int(input(prompt))
+                    if i not in range:
+                        print('Please enter an integet between ',range[0],' and ',range[-1])
+                    else:
+                        return i
+                except ValueError:
+                    print('Please enter an integer')
+            if type(sample) == str:
+                try:
+                    s=str(input(prompt))
+                    if s not in range:
+                        print('Please enter a direction (wasd)')
+                    else:
+                        return s
+                except ValueError:
+                    print('Please enter an str')
+
 
 #Car class used to store each individual car's orientation, size, and position
 class Car:
